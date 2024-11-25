@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+}
+
+.buttons {
+    margin: 20px 0;
+}
+
+.btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.result {
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rock Paper Scissors</h1>
+        <div class="buttons">
+            <button class="btn" id="rock">Rock</button>
+            <button class="btn" id="paper">Paper</button>
+            <button class="btn" id="scissors">Scissors</button>
+        </div>
+        <div id="result" class="result"></div>
+        <button id="resetButton" class="btn">Play Again</button>
+    </div>
+    <script>
+        const buttons = document.querySelectorAll('.btn');
+const resultDisplay = document.getElementById('result');
+const resetButton = document.getElementById('resetButton');
+
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const playerChoice = button.id;
+        const computerChoice = getComputerChoice();
+        const result = determineWinner(playerChoice, computerChoice);
+        displayResult(result, computerChoice);
+    });
+});
+
+function getComputerChoice() {
+    const choices = ['rock', 'paper', 'scissors'];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
+}
+
+function determineWinner(player, computer) {
+    if (player === computer) {
+        return 'It\'s a tie!';
+    } else if (
+        (player === 'rock' && computer === 'scissors') ||
+        (player === 'paper' && computer === 'rock') ||
+        (player === 'scissors' && computer === 'paper')
+    ) {
+        return 'You win!';
+    } else {
+        return 'You lose!';
+    }
+}
+
+function displayResult(result, computerChoice) {
+    resultDisplay.innerText = `Computer chose: ${computerChoice}. ${result}`;
+}
+
+resetButton.addEventListener('click', () => {
+    resultDisplay.innerText = '';
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Картинки-кнопки</title>
+    <style>
+        body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    flex-direction: column
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.button-image {
+    width: 350px;
+    height: 350px;
+    transition: transform 0.3s ease, border 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.button-image:hover {
+    transform: scale(1.05);
+    border: 2px solid #000;
+}
+
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <a href="http://127.0.0.1:8000/flappybird/" target="_blank">
+            <img src="{% static "images/bird.png" %}" alt="Картинка 1" class="button-image">
+        </a>
+        <a href="http://127.0.0.1:8000/typing/" target="_blank">
+            <img src="{% static "images/typing.png" %}" alt="Картинка 2" class="button-image">
+        </a>
+        <a href="http://127.0.0.1:8000/snake/" target="_blank">
+            <img src="{% static "images/snake.png" %}" alt="Картинка 3" class="button-image">
+        </a>
+
+    </div>
+    <h1>Во что поиграем?</h1>
+    <div class="container">
+        <a href="http://127.0.0.1:8000/tictaktoe/" target="_blank">
+            <img src="{% static "images/ttt.png" %}" alt="Картинка 1" class="button-image">
+        </a>
+        <a href="http://127.0.0.1:8000/rpc/" target="_blank">
+            <img src="{% static "images/rpc.png" %}" alt="Картинка 2" class="button-image">
+        </a>
+        <a href="http://127.0.0.1:8000/pong/" target="_blank">
+            <img src="{% static "images/pong.png" %}" alt="Картинка 5" class="button-image">
+        </a>
+    </div>
+</body>
+</html>

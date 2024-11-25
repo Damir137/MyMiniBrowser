@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird Clone</title>
+    <style>
+        body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(to top, #70c5ce, #b0e0e6);
+    font-family: 'Press Start 2P', cursive;
+}
+
+canvas {
+    border: 5px solid #000;
+    border-radius: 10px;
+    background: #fff;
+}
+
+#restartButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+#restartButton:hover {
+    background-color: #f0f0f0;
+}
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <button id="restartButton" style="display: none;">Restart</button>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const restartButton = document.getElementById("restartButton");
+
+const bird = {
+    x: 50,
+    y: 150,
+    width: 34,
+    height: 24,
+    gravity: 0.3,
+    lift: -8,
+    velocity: 0,
+};
+
+const pipes = [];
+const pipeWidth = 40;
+const pipeGap = 120;
+let frame = 0;
+let score = 0;
+let isGameOver = false;
+
+document.addEventListener("keydown", () => {
+    if (!isGameOver) {
+        bird.velocity += bird.lift;
+    }
+});
+
+restartButton.addEventListener("click", resetGame);
+
+function resetGame() {
+    pipes.length = 0;
+    bird.y = 150;
+    bird.velocity = 0;
+    score = 0;
+    isGameOver = false;
+    restartButton.style.display = "none";
+    update();
+}
+
+function drawBird() {
+    ctx.fillStyle = "#ffcc00"; // Bright yellow for the bird
+    ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
+}
+
+function drawPipes() {
+    ctx.fillStyle = "#228B22"; // Forest green for the pipes
+    pipes.forEach(pipe => {
+        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+        ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
+    });
+}
+
+function updatePipes() {
+    if (frame % 90 === 0) {
+        const top = Math.random() * (canvas.height - pipeGap - 20) + 20;
+        const bottom = canvas.height - top - pipeGap;
+        pipes.push({ x: canvas.width, top, bottom });
+    }
+
+    pipes.forEach((pipe, index) => {
+        pipe.x -= 2;
+
+        if (
+            bird.x < pipe.x + pipeWidth &&
+            bird.x + bird.width > pipe.x &&
+            (bird.y < pipe.top || bird.y + bird.height > canvas.height - pipe.bottom)
+        ) {
+            isGameOver = true;
+        }
+
+        if (pipe.x + pipeWidth < bird.x && !pipe.scored) {
+            score++;
+            pipe.scored = true;
+        }
+
+        if (pipe.x + pipeWidth < 0) {
+            pipes.splice(index, 1);
+        }
+    });
+}
+
+function drawScore() {
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.fillText("Score: " + score, 10, 20);
+}
+
+function update() {
+    bird.velocity += bird.gravity;
+    bird.y += bird.velocity;
+
+    if (bird.y + bird.height >= canvas.height) {
+        isGameOver = true;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBird();
+    updatePipes();
+    drawPipes();
+    drawScore();
+
+    if (!isGameOver) {
+        frame++;
+        requestAnimationFrame(update);
+    } else {
+        ctx.fillStyle = "black";
+        ctx.font = "30px Arial";
+        ctx.fillText("Game Over!", 130, canvas.height / 2 - 20);
+        restartButton.style.display = "block";
+    }
+}
+
+update();
+
+    </script>
+</body>
+</html>

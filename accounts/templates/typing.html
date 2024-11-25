@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Test</title>
+    <style>
+        body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to bottom, #6a11cb, #2575fc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #fff;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+#text-to-type {
+    font-size: 18px;
+    margin: 15px 0;
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 5px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+
+    font-size: 16px;
+    color: #333;
+    background: rgba(255, 255, 255, 0.7);
+    transition: background 0.3s;
+}
+
+textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 1);
+    
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.hidden {
+    display: none;
+}
+
+#results {
+    margin-top: 20px;
+}
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Typing Speed Test</h1>
+        <p id="text-to-type"></p>
+        <textarea id="user-input" placeholder="Start typing above text..."></textarea>
+        <button id="start-button">Start Test</button>
+        <div id="results" class="hidden">
+            <p id="speed">Speed: <span id="speed-value">0</span> WPM</p>
+            <p id="accuracy">Accuracy: <span id="accuracy-value">0</span>%</p>
+        </div>
+    </div>
+    <script>
+        const textToType = document.getElementById("text-to-type");
+const userInput = document.getElementById("user-input");
+const startButton = document.getElementById("start-button");
+const results = document.getElementById("results");
+const speedValue = document.getElementById("speed-value");
+const accuracyValue = document.getElementById("accuracy-value");
+
+const sampleTexts = [
+    "The quick brown fox jumps over the lazy dog.",
+    "A journey of a thousand miles begins with a single step.",
+    "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+    "In the middle of difficulty lies opportunity."
+];
+
+let startTime;
+let endTime;
+
+startButton.addEventListener("click", startTest);
+
+function startTest() {
+    const randomIndex = Math.floor(Math.random() * sampleTexts.length);
+    textToType.textContent = sampleTexts[randomIndex];
+    userInput.value = "";
+    userInput.focus();
+    results.classList.add("hidden");
+    startTime = new Date().getTime();
+    userInput.addEventListener("input", checkInput);
+}
+
+function checkInput() {
+    const currentInput = userInput.value;
+    const text = textToType.textContent;
+
+    if (currentInput === text) {
+        endTime = new Date().getTime();
+        calculateResults();
+    }
+}
+
+function calculateResults() {
+    const timeTaken = (endTime - startTime) / 1000; // in seconds
+    const wordsTyped = userInput.value.split(" ").length;
+    const wpm = Math.round((wordsTyped / timeTaken) * 60);
+    const accuracy = calculateAccuracy();
+
+    speedValue.textContent = wpm;
+    accuracyValue.textContent = accuracy.toFixed(2);
+    results.classList.remove("hidden");
+}
+
+function calculateAccuracy() {
+    const text = textToType.textContent;
+    const currentInput = userInput.value;
+
+    let correctCharacters = 0;
+    for (let i = 0; i < Math.min(text.length, currentInput.length); i++) {
+        if (text[i] === currentInput[i]) {
+            correctCharacters++;
+        }
+    }
+
+    return (correctCharacters / text.length) * 100;
+}
+
+    </script>
+</body>
+</html>

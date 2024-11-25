@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>калькулятор1</title>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="item input">0</form></div>
+
+<div class="item type">deg</div>
+<div class="item"onclick="f('sin')">sin</div>
+<div class="item"onclick="f('cos')">cos</div>
+<div class="item"onclick="f('tan')">tan</div>
+<div class="item"onclick="f('ctg')">ctg</div>
+
+<div class="item"onclick="degree('^')">x^y</div>
+<div class="item"onclick="log('lg')">lg</div>
+<div class="item"onclick="log('ln')">ln</div>
+<div class="item" onclick="insert('(')">(</div>
+<div class="item" onclick="insert(')')">)</div>
+
+<div class="item"onclick="sqrt()">√x</div>
+<div class="item clean"onclick="clean()">C</div>
+<div class="item back"onclick="back()">&larr;</div>
+<div class="item percent"onclick="percent()">%</div>
+<div class="item divide" onclick="insert('/')">&divide;</div>
+
+<div class="item"onclick="square()">x^2</div>
+<div class="item" onclick="insert('7')">7</div>
+<div class="item" onclick="insert('8')">8</div>
+<div class="item" onclick="insert('9')">9</div>
+<div class="item mul" onclick="insert('*')">&times;</div>
+
+
+<div class="item"onclick="fact()">!x</div>
+<div class="item" onclick="insert('4')">4</div>
+<div class="item" onclick="insert('5')">5</div>
+<div class="item" onclick="insert('6')">6</div>
+<div class="item sub" onclick="insert('-')">-</div>
+
+
+<div class="item"onclick="minus()">x<span class="upper">-1</span></div>
+<div class="item" onclick="insert('1')">1</div>
+<div class="item" onclick="insert('2')">2</div>
+<div class="item" onclick="insert('3')">3</div>
+<div class="item add" onclick="insert('+')">+</div>
+
+
+<div class="item"onclick="pi()">π</div>
+<div class="item"onclick="ee()">e</div>
+<div class="item zero" onclick="insert('0')">0</div>
+<div class="item" onclick="insert('.')">,</div>
+<div class="item equal" onclick="equal()">=</div>
+</div>
+
+
+<script>
+    let input = document.querySelector('.input')
+
+let power = "";
+
+
+function insert(num){
+    if(input.textContent == 0){
+        input.textContent = "";
+        input.textContent = input.textContent + num;
+    }else
+        input.textContent = input.textContent + num;
+}
+  function clean() {
+    input.textContent = "";
+    power = "";
+  }
+  function back() {
+    var exp = input.textContent;
+    input.textContent = exp.substring(0,exp.length-1);
+    if(input.textContent == 0){
+        input.textContent = "0"
+    }
+  }
+  function equal() {
+    var exp = input.textContent;
+    if(input.textContent.includes('^')){
+        let tmp = input.textContent.split('^');
+        let num = eval(power);
+        let pow = +tmp[1]
+        input.textContent = Math.pow(num,pow)
+        power = "";
+        return;
+    }
+
+
+    if(exp) { 
+      input.textContent = eval(exp);
+
+    }
+  }
+  function percent(){
+      input.textContent = eval(input.textContent)/100;
+  }
+  function pi(){
+      if(input.textContent == 0){
+          input.textContent = "";
+      }
+      input.textContent = input.textContent + Math.PI.toFixed(8);
+  }
+  function ee(){
+    if(input.textContent == 0){
+        input.textContent = "";
+    }
+    input.textContent = input.textContent + Math.E.toFixed(8);
+  }
+  function sqrt(){
+      input.textContent = Math.sqrt(eval(input.textContent))
+  }
+  function square(){
+      input.textContent = Math.pow(eval(input.textContent), 2)
+  }
+  function minus(){
+      input.textContent = Math.pow(eval(input.textContent), -1)
+}  
+ function degree(name){
+     if (name == "^"){
+         power = input.textContent;
+         input.textContent += "^";
+
+     }
+ }
+ function factorial(n) {
+    return (n != 1) ? n * factorial(n - 1) : 1;
+  }
+ function fact(){
+    input.textContent = factorial(+eval(input.textContent))
+ }
+ function log(name){
+     if(name == 'lg'){
+         input.textContent = Math.log10(eval(input.textContent)).toFixed(8);
+     }
+     if(name == 'ln'){
+        input.textContent = Math.log(eval(input.textContent)).toFixed(8);
+    }
+ }
+
+
+ document.querySelector('.type').addEventListener('click', function() {
+    if (document.querySelector('.type').textContent == "deg") {
+        this.textContent = "rad";
+        console.log('Градусы')
+    } else if (document.querySelector('.type').textContent == "rad") {
+        this.textContent = "deg";
+        console.log('Радианы')
+    }
+})
+
+
+function f(name) {
+    if (name == 'sin') {
+        if(document.querySelector('.type').textContent == "deg") {
+            input.textContent = parseFloat(Math.sin(eval(input.textContent) / 180 * Math.PI).toFixed(8).toString());
+        } else {
+            input.textContent = parseFloat(Math.sin(eval(input.textContent)).toFixed(8).toString());
+        }        
+    }
+    if (name == 'cos') {
+        if(document.querySelector('.type').textContent == "deg") {
+            input.textContent = parseFloat(Math.cos(eval(input.textContent) / 180 * Math.PI).toFixed(8).toString());
+        } else {
+            input.textContent = parseFloat(Math.cos(eval(input.textContent)).toFixed(8).toString());
+        } 
+    }
+    if (name == 'tan') {
+        if(document.querySelector('.type').textContent == "deg") {
+            input.textContent = parseFloat(Math.tan(eval(input.textContent) / 180 * Math.PI).toFixed(8).toString());
+        } else {
+            input.textContent = parseFloat(Math.tan(eval(input.textContent)).toFixed(8).toString());
+        }  
+    }
+    if (name == 'ctg') {
+        if(document.querySelector('.type').textContent == "deg") {
+            input.textContent = parseFloat(1/Math.tan(eval(input.textContent) / 180 * Math.PI).toFixed(8).toString());
+        } else {
+            input.textContent = parseFloat(1/Math.tan(eval(input.textContent)).toFixed(8).toString());
+        } 
+    }
+}
+</script>
+<style>
+    body{
+    background-color: darkslategray;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  .container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-gap: 4px;
+    background-color: #2c2c2c;
+    padding: 4px;
+    border-radius: 15px;
+    max-width: 400px;
+    font-family: "Calibri";
+  }
+  .item{
+
+    color: rgb(2, 209, 209);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  form{
+    max-width: 100%;
+  }
+  input{
+    width: 99%;
+    height: 60px;
+    border: none;
+    font-size: 30px;
+    outline: none;
+    text-align: right;
+  }
+  .input{
+    min-height: 60px;
+    justify-content: flex-end;
+    font-size: 30px;
+    height: auto;
+    grid-column: 1/-1;
+    padding: 10px;
+  }
+
+  .upper{
+      font-size: 15px;
+      margin-left: 3px;
+      margin-top: -20px;
+  }
+
+.back, .clean,.add,.sub,.divide,.percent,.mul{
+    color: orange;
+}
+.equal{
+    background-color: orange;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+</style>
+
+</body>
+</html>

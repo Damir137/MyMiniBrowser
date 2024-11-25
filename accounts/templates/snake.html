@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+#gameArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+#gameCanvas {
+    border: 5px solid #1E90FF; /* Синяя рамка игры */
+    background-color: #fff; /* Вернуть прежний цвет игрового окна */
+}
+
+#score, #highScore {
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#restartButton {
+    background-color: #1E90FF; /* Голубой цвет кнопки */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#restartButton:hover {
+    background-color: #4682B4; /* Темно-голубой при наведении */
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Игра Змейка</h1>
+        <div id="gameArea">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        <div id="score">Счёт: 0</div>
+        <div id="highScore">Лучший результат: 0</div>
+        <button id="restartButton">Перезапустить игру</button>
+    </div>
+    <script>
+     const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+const box = 20;
+canvas.width = 400;
+canvas.height = 400;
+
+let snake;
+let food;
+let score;
+let highScore = localStorage.getItem('highScore') || 0;
+let d;
+let game;
+let directionChanged = false;
+
+document.getElementById('highScore').innerText = 'Лучший результат: ' + highScore;
+
+function init() {
+    snake = [];
+    snake[0] = { x: 9 * box, y: 10 * box };
+
+    food = spawnFood();
+
+    score = 0;
+    d = null;
+    directionChanged = false;
+
+    document.getElementById('score').innerText = 'Счёт: ' + score;
+
+    clearInterval(game);
+    game = setInterval(draw, 100);
+}
+
+document.addEventListener('keydown', direction);
+document.getElementById('restartButton').addEventListener('click', init);
+
+function direction(event) {
+    if (directionChanged) return;
+
+    if (event.keyCode == 37 && d != 'RIGHT') {
+        d = 'LEFT';
+        directionChanged = true;
+    } else if (event.keyCode == 38 && d != 'DOWN') {
+        d = 'UP';
+        directionChanged = true;
+    } else if (event.keyCode == 39 && d != 'LEFT') {
+        d = 'RIGHT';
+        directionChanged = true;
+    } else if (event.keyCode == 40 && d != 'UP') {
+        d = 'DOWN';
+        directionChanged = true;
+    }
+}
+
+function collision(head, array) {
+    for (let i = 0; i < array.length; i++) {
+        if (head.x == array[i].x && head.y == array[i].y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function spawnFood() {
+    let newFood;
+    do {
+        newFood = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
+    } while (collision(newFood, snake));
+    return newFood;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i == 0) ? 'green' : 'white';
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+
+        ctx.strokeStyle = 'red';
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    ctx.fillStyle = 'red';
+    ctx.fillRect(food.x, food.y, box, box);
+
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if (d == 'LEFT') snakeX -= box;
+    if (d == 'UP') snakeY -= box;
+    if (d == 'RIGHT') snakeX += box;
+    if (d == 'DOWN') snakeY += box;
+
+    if (snakeX == food.x && snakeY == food.y) {
+        score++;
+        document.getElementById('score').innerText = 'Счёт: ' + score;
+        food = spawnFood();
+    } else {
+        snake.pop();
+    }
+
+    let newHead = {
+        x: snakeX,
+        y: snakeY
+    };
+
+    if (snakeX < 0 || snakeX >= 20 * box || snakeY < 0 || snakeY >= 20 * box || collision(newHead, snake)) {
+        clearInterval(game);
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('highScore', highScore);
+            document.getElementById('highScore').innerText = 'Лучший результат: ' + highScore;
+        }
+        return;
+    }
+
+    snake.unshift(newHead);
+    directionChanged = false;
+}
+
+// Инициализация игры при первом запуске
+init();
+
+    </script>
+</body>
+</html>

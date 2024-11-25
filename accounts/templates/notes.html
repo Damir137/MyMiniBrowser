@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Заметки</title>
+<style>
+body {
+ font-family: 'Arial', sans-serif; /* More specific font */
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ min-height: 100vh;
+ margin: 0;
+ background-color: #f8f8f8; /* Light background */
+}
+
+.container {
+ text-align: center;
+}
+
+#note-container {
+ display: flex;
+ flex-direction: column;
+ gap: 15px;
+ width: 400px;
+ margin: 0 auto;
+}
+
+.note {
+ background-color: #fff; /* White background */
+ padding: 15px;
+ border-radius: 8px;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ border: 1px solid #ddd; /* Light border */
+}
+
+.note span {
+ flex-grow: 1; /* Text takes up available space */
+ margin-right: 10px;
+ word-break: break-word; /* Allows long words to wrap */
+}
+
+
+.note button {
+ background-color: transparent;
+ border: none;
+ cursor: pointer;
+ padding: 5px 10px;
+ font-size: 16px;
+ color: #555;
+}
+
+.note button:hover {
+ opacity: 0.8;
+}
+
+.note.editing {
+ background-color: #f9f9f9; /* Slightly lighter background during edit */
+}
+
+.note input.edit-input {
+ flex-grow: 1;
+ margin-right: 10px;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+ padding: 5px;
+ width: 100%; /* Ensures input occupies the available space */
+ box-sizing: border-box; /* Includes padding in width calculation */
+}
+
+#new-note-text {
+ padding: 10px;
+ margin-top: 10px;
+ border: 1px solid #ccc;
+ border-radius: 5px;
+ width: 100%;
+ box-sizing: border-box;
+}
+
+#add-note-button {
+ padding: 10px 20px;
+ margin-top: 10px;
+ background-color: #4CAF50;
+ color: white;
+ border: none;
+ border-radius: 5px;
+ cursor: pointer;
+ transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+#add-note-button:hover {
+ background-color: #45a049;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Мои Заметки</h1>
+    <div id="note-container"></div>
+    <input type="text" id="new-note-text" placeholder="Введите новую заметку">
+    <button id="add-note-button">Добавить</button>
+  </div>
+  <script>
+const noteContainer = document.getElementById('note-container');
+const newNoteText = document.getElementById('new-note-text');
+const addNoteButton = document.getElementById('add-note-button');
+
+function loadNotes() {
+ const notes = JSON.parse(localStorage.getItem('notes')) || [];
+ notes.forEach((note, index) => addNoteToUI(note, index));
+}
+
+function addNoteToUI(text, index) {
+ const noteDiv = document.createElement('div');
+ noteDiv.classList.add('note');
+ noteDiv.dataset.index = index;
+
+ const textSpan = document.createElement('span');
+ textSpan.textContent = text;
+ noteDiv.appendChild(textSpan);
+
+ const editButton = document.createElement('button');
+ editButton.textContent = 'Edit';
+ editButton.addEventListener('click', () => editNote(index));
+ noteDiv.appendChild(editButton);
+
+ const deleteButton = document.createElement('button');
+ deleteButton.textContent = 'Delete';
+ deleteButton.addEventListener('click', () => deleteNote(index));
+ noteDiv.appendChild(deleteButton);
+
+ noteContainer.appendChild(noteDiv);
+}
+
+function deleteNote(index) {
+  const notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.splice(index, 1);
+  localStorage.setItem('notes', JSON.stringify(notes));
+  updateNoteUI();
+}
+
+
+function editNote(index) {
+  const notes = JSON.parse(localStorage.getItem('notes')) || [];
+  const noteDiv = noteContainer.querySelector(`.note[data-index="${index}"]`);
+  const textSpan = noteDiv.querySelector('span');
+  const editInput = document.createElement('input');
+  editInput.type = 'text';
+  editInput.classList.add('edit-input');
+  editInput.value = textSpan.textContent;
+  noteDiv.replaceChild(editInput, textSpan);
+
+  editInput.addEventListener('blur', () => {
+    notes[index] = editInput.value;
+    localStorage.setItem('notes', JSON.stringify(notes));
+    updateNoteUI();
+  });
+  editInput.focus(); //added for better user experience
+}
+
+function addNote() {
+ const noteText = newNoteText.value.trim();
+ if (noteText !== "") {
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.push(noteText);
+  localStorage.setItem('notes', JSON.stringify(notes));
+  updateNoteUI();
+  newNoteText.value = "";
+ }
+}
+
+function updateNoteUI(){
+  noteContainer.innerHTML = '';
+  loadNotes();
+}
+
+addNoteButton.addEventListener('click', addNote);
+loadNotes();
+
+
+  </script>
+</body>
+</html>
