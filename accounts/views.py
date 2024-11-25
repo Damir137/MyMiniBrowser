@@ -1,6 +1,7 @@
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm
+from django.http import JsonResponse
 from django.shortcuts import render
 
 class RegisterView(CreateView):
@@ -48,6 +49,10 @@ def note(request):
 
 def calc(request):
     return render(request, 'calculator.html')
+
+ 
+def ponk(request):
+    return JsonResponse({"message": "ponk"})
 
 
 

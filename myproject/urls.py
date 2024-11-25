@@ -19,6 +19,7 @@ urlpatterns = [
     path('tictaktoe/', views.tictaktoe),
     path('notes/', views.note),
     path('snake/', views.snake),
+    path('pink/', views.ponk),
 
 ]
    
